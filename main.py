@@ -1,23 +1,25 @@
-from telebot import TeleBot, types
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram.ext import Updater, CommandHandler, CallbackContext
 
-# Initialize the bot with your token
-bot = TeleBot("7628087790:AAFADZ1UQ1II7ECu2zwnctkbCbziDKW0QsA")
+# Command to send the button
+def start(update: Update, context: CallbackContext):
+    # Create the inline button with the URL
+    button = InlineKeyboardButton(text="Let's go!", url="https://t.me/notpixel/app?startapp=f7046488481")
+    keyboard = InlineKeyboardMarkup([[button]])
 
-# Handle the /start command
-@bot.message_handler(commands=['start'])
-def start_command(message):
-    # Create a button with WebApp URL
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    web_app = types.WebAppInfo("https://callmyphone.org/")  # Replace with your web app link
-    button = types.KeyboardButton(text="Play Mini App", web_app=web_app)
-    markup.add(button)
+    # Send the message with the button
+    update.message.reply_text("Click the button below to open the web app:", reply_markup=keyboard)
 
-    # Send a message with the WebApp button
-    bot.send_message(
-        message.chat.id,
-        "Click the button below to start the mini app!",
-        reply_markup=markup
-    )
+def main():
+    # Replace 'YOUR_BOT_TOKEN' with your bot token
+    updater = Updater("7628087790:AAFADZ1UQ1II7ECu2zwnctkbCbziDKW0QsA", use_context=True)
 
-# Polling
-bot.polling()
+    # Add command handler
+    updater.dispatcher.add_handler(CommandHandler("start", start))
+
+    # Start the bot
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == "__main__":
+    main()
